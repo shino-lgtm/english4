@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>英会話 応答クイズ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>英会話 応答クイズ</h1>
+
+  <div id="quiz-box">
+    <p id="instruction">▶ ボタンを押して音声を再生し、正しい返答を選んでください。</p>
+    <button id="play-button">▶ 再生</button>
+    <div id="choices"></div>
+    <div id="feedback"></div>
+    <button id="next-button" style="display: none;">次の問題 ▶</button>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        audio: "audio/1.mp3",
+        answer: "I'd like to check in, please.",
+        choices: [
+          "I'd like to check in, please.",
+          "Do you have Wi-Fi?",
+          "Just water, please."
+        ]
+      },
+      {
+        audio: "audio/2.mp3",
+        answer: "My name is ○○.",
+        choices: [
+          "My name is ○○.",
+          "A non-smoking room, please.",
+          "How much is it?"
+        ]
+      },
+      {
+        audio: "audio/3.mp3",
+        answer: "I’ll stay for two nights.",
+        choices: [
+          "I’ll stay for two nights.",
+          "I’d like a window seat.",
+          "No, thank you."
+        ]
+      },
+      {
+        audio: "audio/4.mp3",
+        answer: "Yes, I have a reservation.",
+        choices: [
+          "Yes, I have a reservation.",
+          "I’m allergic to peanuts.",
+          "I’d like the fish."
+        ]
+      },
+      {
+        audio: "audio/5.mp3",
+        answer: "Here it is.",
+        choices: [
+          "Here it is.",
+          "What’s your recommendation?",
+          "That’s all."
+        ]
+      },
+      {
+        audio: "audio/6.mp3",
+        answer: "Just water, please.",
+        choices: [
+          "Just water, please.",
+          "Where’s the restroom?",
+          "I’m from Japan."
+        ]
+      },
+      {
+        audio: "audio/7.mp3",
+        answer: "I’d like to pay in cash.",
+        choices: [
+          "I’d like to pay in cash.",
+          "I’ll come back later.",
+          "What’s the time?"
+        ]
+      },
+      {
+        audio: "audio/8.mp3",
+        answer: "Yes, it is.",
+        choices: [
+          "Yes, it is.",
+          "I’d like to cancel.",
+          "I have a connecting flight."
+        ]
+      },
+      {
+        audio: "audio/9.mp3",
+        answer: "A non-smoking room, please.",
+        choices: [
+          "A non-smoking room, please.",
+          "Can I have the check?",
+          "I missed my flight."
+        ]
+      },
+      {
+        audio: "audio/10.mp3",
+        answer: "You're welcome.",
+        choices: [
+          "You're welcome.",
+          "I’d like to check in.",
+          "I don’t eat meat."
+        ]
+      }
+    ];
+
+    let current = 0;
+
+    const playBtn = document.getElementById("play-button");
+    const nextBtn = document.getElementById("next-button");
+    const choicesBox = document.getElementById("choices");
+    const feedback = document.getElementById("feedback");
+
+    function loadQuestion() {
+      feedback.textContent = "";
+      nextBtn.style.display = "none";
+      choicesBox.innerHTML = "";
+
+      const q = quizData[current];
+      q.choices.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.textContent = choice;
+        btn.className = "choice-button";
+        btn.onclick = () => checkAnswer(choice, q.answer);
+        choicesBox.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selected, correct) {
+      if (selected === correct) {
+        feedback.textContent = "✅ 正解！";
+      } else {
+        feedback.textContent = `❌ 不正解。正解: ${correct}`;
+      }
+      document.querySelectorAll(".choice-button").forEach(btn => btn.disabled = true);
+      nextBtn.style.display = "inline-block";
+    }
+
+    function playAudio(file) {
+      const audio = new Audio(file);
+      audio.play();
+    }
+
+    playBtn.onclick = () => {
+      const q = quizData[current];
+      playAudio(q.audio);
+    };
+
+    nextBtn.onclick = () => {
+      current++;
+      if (current < quizData.length) {
+        loadQuestion();
+      } else {
+        document.getElementById("instruction").textContent = "🎉 全問終了！お疲れさまでした。";
+        playBtn.style.display = "none";
+        choicesBox.innerHTML = "";
+        feedback.textContent = "";
+        nextBtn.style.display = "none";
+      }
+    };
+
+    // 初期表示
+    loadQuestion();
+  </script>
+</body>
+</html>
